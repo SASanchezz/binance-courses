@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  mysql:
+    image: mysql:8
+    ports:
+      - ${MYSQL_PORT:-3306}:3306
+    volumes:
+      - ./docker/db:/docker-entrypoint-initdb.d/
+      - ./docker/var/db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_INITDB_SKIP_TZINFO: ${MYSQL_INITDB_SKIP_TZINFO}
+    command:
+      'mysqld --innodb-flush-method=fsync'
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+      UPLOAD_LIMIT: 300M
+    ports:
+        - 8181:80
+    volumes:
+      - /sessions
+
+volumes:
+  db:

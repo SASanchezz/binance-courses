@@ -1,0 +1,11 @@
+/docker/
+/tmp/
+/uploads/
+/logs/
+/.env
+/.gitignore
+/*.json
+/*.yml
+!/package.json
+!/package-lock.json
+!/tsconfig.json
